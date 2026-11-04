@@ -147,8 +147,10 @@ def run_bot():
 
 
 if __name__ == "__main__":
-    # Бот в фоновом потоке
-    threading.Thread(target=run_bot, daemon=True).start()
-    # Flask слушает порт, который даёт Render
+    # Запускаем бота в отдельном ПРОЦЕССЕ, а не в потоке
+    bot_process = multiprocessing.Process(target=run_bot_process, daemon=True)
+    bot_process.start()
+
+    # Flask запускается в главном процессе и слушает порт
     port = int(os.environ.get("PORT", 10000))
     app.run(host="0.0.0.0", port=port)
