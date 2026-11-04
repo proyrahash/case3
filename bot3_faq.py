@@ -87,7 +87,6 @@ async def start(message: Message):
 
 @dp.callback_query(F.data == "file:price")
 async def send_price(call: CallbackQuery):
-    # price.pdf должен лежать рядом с bot3_faq.py и быть в репозитории
     price_file = FSInputFile("price.pdf", filename="Прайс-лист.pdf")
     await call.message.answer_document(
         price_file,
@@ -142,15 +141,14 @@ def health():
     return "Bot is running", 200
 
 
+# ============================================================
+# 7. Запуск бота в фоновом потоке с handle_signals=False
+# ============================================================
 def run_bot():
-    asyncio.run(dp.start_polling(bot))
+    asyncio.run(dp.start_polling(bot, handle_signals=False))
 
 
 if __name__ == "__main__":
-    # Запускаем бота в отдельном ПРОЦЕССЕ, а не в потоке
-    bot_process = multiprocessing.Process(target=run_bot_process, daemon=True)
-    bot_process.start()
-
-    # Flask запускается в главном процессе и слушает порт
+    threading.Thread(target=run_bot, daemon=True).start()
     port = int(os.environ.get("PORT", 10000))
     app.run(host="0.0.0.0", port=port)
