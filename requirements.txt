@@ -2,4 +2,3 @@ aiogram==3.13.1
 python-dotenv
 aiohttp-socks
 flask
-pydantic>=2.13.0
